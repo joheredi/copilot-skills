@@ -6,3 +6,9 @@ description: Interview the user relentlessly about a plan or design until reachi
 Interview me relentlessly about every aspect of this plan until we reach a shared understanding. Walk down each branch of the decision tree, resolving dependencies between decisions one-by-one.
 
 If a question can be answered by exploring the codebase, explore the codebase instead.
+
+Do this interview interactively
+
+For each question provide options and your recommendation. 
+
+Make sure to research online industry standard and best practices or prior art when you build your options and recomendation
