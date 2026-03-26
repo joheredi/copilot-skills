@@ -590,6 +590,8 @@ Pass these inputs explicitly when invoking the skill:
 * `TEST_USER_EMAIL`: login email for the test user
 * `TEST_USER_PASSWORD`: login password for the test user
 * `TEST_NOTES` (optional): any environment-specific notes, seed data notes, MFA caveats, or scope limits
+* `MAIN_MODEL` (optional): model to use for the main orchestrator agent. Default: `claude-opus-4`. Override if a different model is preferred or available.
+* `SUBAGENT_MODEL` (optional): model to use for parallel sub-agents. Default: `claude-sonnet-4`. Override to balance speed, cost, and capability.
 
 Example invocation payload:
 
@@ -598,7 +600,24 @@ APP_URL=https://your-app-url.example.com
 TEST_USER_EMAIL=test.user@example.com
 TEST_USER_PASSWORD=<secret>
 TEST_NOTES=Use seeded tenant Acme Demo. Focus on sales, customers, inventory, settings. Skip billing if unavailable.
+MAIN_MODEL=claude-opus-4
+SUBAGENT_MODEL=claude-sonnet-4
 ```
+
+## Model recommendations
+
+The skill works best when the main orchestrator and parallel sub-agents use different model tiers.
+
+| Role | Default model | Rationale |
+|------|---------------|-------------------------------------------|
+| Main orchestrator | `claude-opus-4.6-1m` | Strongest reasoning and synthesis for UX judgment, module prioritization, and aggregating findings across sub-agents |
+| Parallel sub-agents | `gpt-sonnet-4` | Fast and capable at following structured instructions, Playwright interaction, and template-driven output; reduces wall-clock time and cost when spawning multiple agents |
+
+**Why not use the top-tier model for everything?**
+
+Sub-agents perform scoped, template-driven work (explore one module, test one viewport, write test cases from provided findings). They don't need deep strategic reasoning — they need speed and reliable instruction-following. Since 3–5 sub-agents run per parallel phase, using a faster/cheaper model multiplies savings without meaningfully reducing quality.
+
+**Overriding**: Pass `MAIN_MODEL` and/or `SUBAGENT_MODEL` in the invocation payload to use different models. Acceptable alternatives include `gpt-5.4`, `claude-sonnet-4`, or any model available in the current environment. If the environment does not support per-agent model selection, all agents will use the session's active model — in that case, prefer the orchestrator-tier model.
 
 Use the provided values only for test execution. Do not persist secrets into generated documentation unless the repo already has an approved secure pattern for test credentials.
 
@@ -609,6 +628,8 @@ If credentials are missing or login fails, continue with all accessible unauthen
 ```text
 docs/
   testing/
+    sitemap.md
+    summary.md
     test-plan.md
     test-cases/
       auth/
