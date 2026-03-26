@@ -50,6 +50,41 @@ Rules:
 * Do not turn this into a white-box implementation review.
 * When uncertain about expected UX, research current best practices and industry standards online and use that to justify expected behavior.
 
+### Source-code usage boundary
+
+Source code may be read to:
+
+* discover routes or URLs that are not easily reachable through the UI
+* confirm field names or data model details needed to understand a form
+* check whether observed behavior is intentional vs. a bug
+
+Source code must **not** be used to:
+
+* derive expected behavior or test oracles
+* replace UI exploration with code reading
+* write implementation-aware assertions
+
+## Playwright usage
+
+Use the `playwright-cli` skill or browser tools to interact with the app.
+
+Key operations:
+
+* `open_browser_page` — navigate to URLs
+* `click_element` / `type_in_page` — interact with UI elements
+* `screenshot_page` — capture evidence
+* `read_page` — inspect DOM state and visible text
+
+Device viewports for responsive testing:
+
+| Device  | Width | Height |
+|---------|-------|--------|
+| Desktop | 1920  | 1080   |
+| Tablet  | 768   | 1024   |
+| Mobile  | 375   | 812    |
+
+Set the viewport before beginning each device pass.
+
 ## UX review standard
 
 Do not stop at “it works.”
@@ -113,11 +148,46 @@ Autonomously identify and explore, where available:
 * empty/loading/error states
 * responsive behavior across devices
 
-If the app is broad, prioritize the most central user-facing workflows first.
+### Scope-limiting strategy
+
+If the app is broad:
+
+1. Explore top-level navigation first to build a sitemap.
+2. Pick the top 3–5 modules by apparent centrality to users.
+3. Within each module, exercise at most 2–3 representative workflows before moving on.
+4. Return to lower-priority modules only after high-priority ones are covered.
+5. Document any modules that were discovered but not explored.
+
+## Exit criteria
+
+Exploration is considered complete when:
+
+* All discoverable top-level navigation items have been visited at least once.
+* At least one full CRUD or primary workflow has been exercised per major module.
+* Responsive checks have been performed on at least 3 key screens (desktop, tablet, mobile).
+* A sitemap has been produced.
+* All discovered issues have been filed.
+* Test cases have been written for every explored workflow.
 
 ## Deliverables
 
 Generate the following artifacts.
+
+### 0) Navigation sitemap
+
+Path:
+
+`docs/testing/sitemap.md`
+
+Produce this **first**, before any other deliverable. It grounds all subsequent work.
+
+Contents:
+
+* Top-level navigation items
+* Sub-navigation / sidebar items per module
+* Key pages and their URLs
+* Notes on which areas require authentication
+* Any areas that were inaccessible or errored
 
 ### 1) Master test plan
 
@@ -176,6 +246,71 @@ Each test case file must include:
 
 The test case must be specific enough that another AI agent can execute it without ambiguity.
 
+Use this template:
+
+```markdown
+# {TEST-CASE-ID}: {Title}
+
+| Field                  | Value                          |
+|------------------------|--------------------------------|
+| Area / Module          |                                |
+| User Goal              |                                |
+| Priority               |                                |
+| Preconditions          |                                |
+| Test Type              |                                |
+| Coverage Tags          |                                |
+
+## Related Requirements / Assumptions
+
+-
+
+## Description
+
+...
+
+## Steps
+
+1. ...
+
+## Expected Results / Pass Criteria
+
+- ...
+
+## Fail Criteria
+
+- ...
+
+## Data
+
+### Valid Data
+
+- ...
+
+### Invalid Data
+
+- ...
+
+## Responsive / Device Notes
+
+- ...
+
+## Accessibility Checks
+
+- ...
+
+## UX Heuristics / Design Expectations
+
+- ...
+
+## Notes for Future Execution Agents
+
+- ...
+
+## Related Issues
+
+- ...
+```
+
 ### 3) Issues found during exploration
 
 Path pattern:
@@ -205,6 +340,64 @@ Each issue file must include:
 
 Make issues actionable for a future AI investigation/fix agent.
 
+Use this template:
+
+```markdown
+# {ISSUE-ID}: {Title}
+
+| Field                    | Value                          |
+|--------------------------|--------------------------------|
+| Severity                 |                                |
+| Priority                 |                                |
+| Type                     |                                |
+| Area / Module            |                                |
+| Environment / Viewport   |                                |
+
+## Summary
+
+...
+
+## Observed Behavior
+
+...
+
+## Expected Behavior
+
+...
+
+## Why This Is a Problem for Users
+
+...
+
+## Reproduction Steps
+
+1. ...
+
+## Evidence
+
+- ...
+
+## Suspected Scope / Affected Flows
+
+- ...
+
+## Hypothesis / Notes for Investigation
+
+- ...
+
+## Recommended Direction for Fix
+
+- ...
+
+## Screenshots / Artifact Paths
+
+- ...
+
+## Related Test Case IDs
+
+- ...
+```
+
 ### 4) Evidence
 
 Suggested paths:
@@ -213,6 +406,22 @@ Suggested paths:
 * `docs/test-results/screenshots/`
 
 Use stable, descriptive names.
+
+### 5) Executive summary
+
+Path:
+
+`docs/testing/summary.md`
+
+A one-page overview produced after exploration is complete:
+
+* Modules explored (with coverage confidence: high / medium / low)
+* Total test cases generated
+* Total issues found, broken down by severity
+* Top 3–5 risk areas
+* Modules discovered but not explored
+* Key open questions
+* Recommended next steps
 
 ## Recommended naming conventions
 
@@ -225,29 +434,79 @@ Suggested stable IDs:
 
 Prefer grouping test cases by module.
 
+## Severity and priority definitions
+
+Use these scales consistently across all issues.
+
+**Severity** (impact on the user):
+
+| Level    | Meaning                                                        |
+|----------|----------------------------------------------------------------|
+| Critical | Blocks a core workflow, causes data loss, or makes a feature unusable |
+| Major    | Significant UX degradation; workaround may exist               |
+| Minor    | Cosmetic issue or minor inconvenience                          |
+| Low      | Enhancement, polish, or nice-to-have improvement               |
+
+**Priority** (order of addressing):
+
+| Level  | Meaning                                      |
+|--------|----------------------------------------------|
+| P0     | Must fix before release                      |
+| P1     | Should fix soon; high user impact            |
+| P2     | Fix when convenient; moderate impact          |
+| P3     | Backlog; low urgency                         |
+
 ## Execution procedure
 
-Follow this sequence:
+Follow this sequence. Write checkpoint notes to session memory after completing each phase so progress is preserved if interrupted.
+
+### Phase 1 — Connect and map (sequential)
 
 1. Launch or connect to the target app.
-2. Use Playwright CLI to explore the UI.
-3. Map the navigation, modules, and major workflows.
-4. Exercise representative happy paths, edge cases, and obvious failure cases.
-5. Review forms carefully for:
+2. Authenticate if credentials are available.
+3. Explore top-level navigation and build the **sitemap** (`docs/testing/sitemap.md`).
+4. **Checkpoint**: write the sitemap and save a session note listing discovered modules.
 
+### Phase 2 — Explore modules (parallelizable)
+
+For each major module (top 3–5 by centrality):
+
+5. Exercise representative happy paths, edge cases, and obvious failure cases.
+6. Review forms carefully for:
    * input method appropriateness
    * defaults
    * validation
    * error prevention
    * feedback
    * unnecessary typing or repeated work
-6. Review tables, search, filters, and list management UX.
-7. Evaluate empty, loading, success, warning, and error states wherever possible.
-8. Re-run key workflows on desktop, tablet, and mobile viewports.
-9. Capture screenshots/evidence for important findings.
-10. Create issue files immediately when meaningful problems are found.
-11. Synthesize a master test plan.
-12. Generate detailed test case files for all covered areas.
+7. Review tables, search, filters, and list management UX.
+8. Evaluate empty, loading, success, warning, and error states.
+9. Create issue files immediately when meaningful problems are found.
+10. **Checkpoint**: save a session note summarizing findings for that module.
+
+**Parallel sub-agents**: After the sitemap is built, launch one sub-agent per module to explore in parallel. Each sub-agent opens its own browser, explores its assigned module, writes issue files, and returns a structured summary of findings. See the **Parallel sub-agent strategy** section.
+
+### Phase 3 — Device and responsive testing (parallelizable)
+
+11. Re-run key workflows on desktop, tablet, and mobile viewports.
+12. Capture screenshots/evidence for important findings.
+13. File additional responsive or device-specific issues.
+
+**Parallel sub-agents**: Launch one sub-agent per device viewport. Each sub-agent navigates through the same set of key screens at its assigned viewport size, captures screenshots, and files responsive issues.
+
+### Phase 4 — Synthesize deliverables (parallelizable)
+
+14. Write the **executive summary** (`docs/testing/summary.md`).
+15. Synthesize the **master test plan** (`docs/testing/test-plan.md`).
+16. Generate **detailed test case files** for all covered areas.
+
+**Parallel sub-agents**: Launch one sub-agent per module to write that module’s test case files in parallel. Each sub-agent receives the exploration findings for its module and produces the test case Markdown files. A final sequential pass assembles the master test plan and executive summary from all module outputs.
+
+### Phase 5 — Final review (sequential)
+
+17. Verify all deliverables are internally consistent (IDs match, links resolve, no orphaned references).
+18. Verify every explored workflow has at least one test case.
+19. Verify every issue references at least one test case.
 
 ## Constraints
 
@@ -257,6 +516,59 @@ Follow this sequence:
 * Prefer concrete observations from actual UI exploration.
 * Document assumptions explicitly.
 * Use source inspection only when necessary to validate assumptions.
+
+## Error recovery
+
+When exploration encounters problems:
+
+| Situation                          | Action                                                                 |
+|------------------------------------|------------------------------------------------------------------------|
+| Page returns 500 or blank screen   | Screenshot, file an issue, skip the page, continue with next area      |
+| Login fails                        | Continue with all unauthenticated areas; document the limitation       |
+| Form submission crashes            | Screenshot, file an issue, attempt the same action once more, move on  |
+| Element not found / timeout        | Refresh page, retry once; if still failing, file issue and move on     |
+| App becomes unresponsive           | Reload the page; if persistent, restart the browser and resume         |
+| Unexpected modal or dialog blocks  | Dismiss or screenshot, file issue, continue                            |
+
+Never retry the same failing action more than twice. File an issue and move on.
+
+## Parallel sub-agent strategy
+
+Copilot can launch parallel sub-agents (`runSubagent`) to speed up exploration and deliverable generation. Each sub-agent operates independently with its own browser session.
+
+### Where to parallelize
+
+| Phase                    | Parallel unit          | What each sub-agent does                                                    |
+|--------------------------|------------------------|------------------------------------------------------------------------------|
+| Module exploration       | 1 agent per module     | Opens own browser, authenticates, explores assigned module, writes issues, returns structured findings |
+| Device testing           | 1 agent per viewport   | Opens browser at assigned viewport, navigates key screens, captures screenshots, files responsive issues |
+| Test case generation     | 1 agent per module     | Receives exploration findings, writes test case files for its module         |
+
+### What must stay sequential
+
+* **Sitemap creation** — must happen first so modules can be assigned.
+* **Master test plan and executive summary** — must happen last, after all module findings are collected.
+* **Final consistency review** — must see all deliverables.
+
+### Sub-agent prompt requirements
+
+When launching a sub-agent, include in the prompt:
+
+* The app URL and credentials
+* The specific module or viewport to focus on
+* The naming conventions and templates from this skill
+* The output folder path for its deliverables
+* Instruction to return a structured JSON or Markdown summary of: pages visited, issues filed (with IDs and paths), test case IDs drafted, and any areas it could not access
+
+### Merging parallel results
+
+After all parallel sub-agents return:
+
+1. Collect all issue files and verify no duplicate IDs.
+2. Collect all test case files and verify no duplicate IDs.
+3. Build the master test plan from the union of all module findings.
+4. Build the executive summary from coverage and issue counts.
+5. Run the final consistency check.
 
 ## Quality bar
 
