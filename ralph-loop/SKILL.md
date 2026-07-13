@@ -83,15 +83,26 @@ in its prompt: focused tests only; the orchestrator owns full-suite runs.
 ## Models — pass these explicitly on every `task` tool dispatch
 
 Code quality is the top priority; speed is secondary; cost is not a constraint.
-**Models are routed by task priority and risk surface** to avoid burning Opus
-time on routine work.
+**Models are routed by task priority and risk surface** to avoid burning
+top-tier reasoning time on routine work.
+
+> **Model selection policy.** The model IDs named below are **minimum
+> baselines as of writing**, chosen for their *tier* (reasoning strength /
+> speed) and *family* (Claude / GPT / Gemini). Always prefer the **newest,
+> most capable available model in the same tier and family**. If a named
+> model is unavailable — or a newer/better model in that family exists in the
+> current environment — use that one instead and briefly note the
+> substitution. Never downgrade below the named baseline. The **family
+> diversity** rules (implementer, reviewers, and delivery judge should span
+> different families) must be preserved regardless of which specific versions
+> are current.
 
 ### Implementer + Fixer model (priority-based)
 
 | Task signal | Model |
 |---|---|
-| `priority: high`, OR diff likely touches `prisma/`, `extensions/mexico/`, modules under `accounting/`, `*.rls.*`, `permission-catalog.ts`, `specs/*.tsp`, anything `auth*`, anything `*payment*`/`*invoice*`/`*cfdi*`, anything in `knowledge/critical.md`'s blast radius | `claude-opus-4.7` |
-| Everything else (routine CRUD, test additions, small refactors, docs, UI components without business logic) | `claude-sonnet-4.6` |
+| `priority: high`, OR diff likely touches `prisma/`, `extensions/mexico/`, modules under `accounting/`, `*.rls.*`, `permission-catalog.ts`, `specs/*.tsp`, anything `auth*`, anything `*payment*`/`*invoice*`/`*cfdi*`, anything in `knowledge/critical.md`'s blast radius | `claude-opus-4.7` *(top Claude reasoning tier — use the newest available Opus-class Claude model)* |
+| Everything else (routine CRUD, test additions, small refactors, docs, UI components without business logic) | `claude-sonnet-4.6` *(fast Claude tier — use the newest available Sonnet-class Claude model)* |
 
 The fixer uses the **same model** as the implementer chose for that task.
 
@@ -99,16 +110,17 @@ The fixer uses the **same model** as the implementer chose for that task.
 
 | Task signal | Reviewers |
 |---|---|
-| Same "high-risk" signal as above for Opus implementer | **Two reviewers in parallel:** `code-review` × `gpt-5.5` AND `code-review` × `gemini-3.1-pro-preview` |
-| Everything else | **One reviewer:** `code-review` × `gemini-3.1-pro-preview` (different family from both Claude implementer and GPT) |
+| Same "high-risk" signal as above for Opus implementer | **Two reviewers in parallel:** `code-review` × `gpt-5.5` AND `code-review` × `gemini-3.1-pro-preview` *(newest available GPT-class and Gemini-class models)* |
+| Everything else | **One reviewer:** `code-review` × `gemini-3.1-pro-preview` *(newest available Gemini-class model — different family from both Claude implementer and GPT)* |
 
 Aggregation when two reviewers run: **either rejects → reject.** Union the
 blocking issues, dedupe, send to fixer.
 
 ### Validator (always)
 
-`task` × `claude-haiku-4.5`. Don't upgrade — it just runs shell commands
-and reports PASS/FAIL.
+`task` × `claude-haiku-4.5` *(cheapest fast Claude tier — use the newest
+available Haiku-class model)*. Don't upgrade the tier — it just runs shell
+commands and reports PASS/FAIL.
 
 ### Delivery judge (always, post-commit, background)
 
