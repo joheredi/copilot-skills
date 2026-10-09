@@ -1,6 +1,6 @@
 ---
 name: tasseo-ahp-canary
-description: Maintain the specific Tasseo Staging VS Code AHP Canary report: verify live freshness, diagnose failed refreshes or mixed Frame identity/cycle/point errors, preserve statistics during UI changes, and validate ingestion, Measures, automations, and publication. Use for this report, not generic Canary analysis, production deployment, or GitHub issue management.
+description: "Maintain the specific Tasseo Staging VS Code AHP Canary report: verify live freshness, diagnose failed refreshes or mixed Frame identity/cycle/point errors, preserve statistics during UI changes, and validate ingestion, Measures, automations, and publication. Use for this report, not generic Canary analysis, production deployment, or GitHub issue management."
 ---
 
 # Tasseo AHP Canary
