@@ -1,0 +1,33 @@
+{
+  "description": "Synthetic offline fixture specification. These identities and token values are not live Tasseo data and must never be ingested.",
+  "report": {"id": "synthetic-reader"},
+  "measures": {
+    "frames": {"id": "synthetic-frame-id", "slug": "synthetic.frames"},
+    "publication_status": {"id": "synthetic-receipt-id", "slug": "synthetic.receipts"}
+  },
+  "contract": {
+    "harness": "vscode-ahp",
+    "comparison_basis": "SCHEDULED_EXECUTION_WINDOW",
+    "clock_methodology": "native-started-at-v1/canary-v5",
+    "gauge_address": "2030-01-01T00:00:00.000Z",
+    "models": ["synthetic-model-a", "synthetic-model-b"],
+    "scenarios": ["say_hello", "pet_explain_mapped_drive_detection"],
+    "cadences": ["daily", "weekly"],
+    "expected_frames": 8,
+    "expected_history_slots": 60
+  },
+  "cycles": {
+    "old": {
+      "end": "2030-01-01T00:00:00.000Z",
+      "point": "2030-01-01T20:30:00.000Z",
+      "frame_written": "2030-01-01T21:00:00.000Z",
+      "receipt_written": "2030-01-01T21:10:00.000Z"
+    },
+    "next": {
+      "end": "2030-01-02T00:00:00.000Z",
+      "point": "2030-01-02T20:30:00.000Z",
+      "frame_written": "2030-01-02T21:00:00.000Z",
+      "receipt_written": "2030-01-02T21:10:00.000Z"
+    }
+  }
+}

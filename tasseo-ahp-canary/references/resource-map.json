@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "environment": "staging",
+  "origin": "https://staging.tasseo.dev",
+  "last_verified_at": "2026-10-09T02:45:29.275Z",
+  "verification_note": "Historical session baseline, not a current health assertion. Rediscover source revisions, pending edits, schemas, and operation outcomes in every session.",
+  "report": {
+    "id": "2b962574-da2d-49c4-b565-7d957db5194f",
+    "url": "https://staging.tasseo.dev/reports/2b962574-da2d-49c4-b565-7d957db5194f",
+    "name": "VS Code AHP Canary — live",
+    "data_block_id": "4d2e71fa-ed7f-4ff5-be68-aab5e7b46ef0",
+    "code_block_id": "eccfb890-33da-43db-b2de-60648e2556a4"
+  },
+  "template": {
+    "id": "4f45cbe2-4460-4741-9ca8-ecc6a1073582",
+    "role": "Promoted parameterized candidate template in Staging, not a production deployment",
+    "data_block_id": "f75340b3-e364-4276-b84e-c9633dd03f95",
+    "code_block_id": "232cc7e9-b565-4355-82f1-e05ffa6aadad"
+  },
+  "bucket": {
+    "id": "013137af-b4ea-47c8-9b87-493a69cf8620",
+    "role": "Native imported AHP executions"
+  },
+  "measures": {
+    "frames": {
+      "id": "bbd0a2fc-7f98-4001-9940-d3af5a204f36",
+      "slug": "canary.ahp-execution-frame"
+    },
+    "publication_status": {
+      "id": "817eb7d0-af12-4938-95f5-4224509d9e7f",
+      "slug": "canary.ahp-execution-publication-status"
+    },
+    "reader_clock": {
+      "id": "0ae65849-071d-4ce7-9fe6-51dd6ae51e62",
+      "slug": "canary.ahp-execution-reader-clock"
+    }
+  },
+  "automations": {
+    "main": {
+      "id": "230ae5ea-595d-46d2-b6aa-0f5735ab4c30",
+      "slug": "canary-ahp-live-refresh",
+      "trigger": "api.input"
+    },
+    "daily": {
+      "id": "87cda6bd-4c71-4af6-a441-5ba477ff5a5a",
+      "slug": "canary-ahp-live-daily",
+      "cron": "30 20 * * *",
+      "time_zone": "UTC"
+    },
+    "hourly": {
+      "id": "4de0e3e4-c5c9-4275-9e0e-1b000120ba92",
+      "slug": "canary-ahp-live-watchdog",
+      "cron": "15 * * * *",
+      "time_zone": "UTC"
+    }
+  },
+  "contract": {
+    "harness": "vscode-ahp",
+    "comparison_basis": "SCHEDULED_EXECUTION_WINDOW",
+    "clock_methodology": "native-started-at-v1/canary-v5",
+    "gauge_address": "2026-10-07T00:00:00.000Z",
+    "gauge_window_end": "2026-10-07T00:00:00.001Z",
+    "expected_frames": 92,
+    "expected_history_slots": 690,
+    "history_days": 15,
+    "scenarios": ["say_hello", "pet_explain_mapped_drive_detection"],
+    "cadences": ["daily", "weekly"],
+    "models": [
+      "claude-haiku-4.5", "claude-opus-4.6", "claude-opus-4.7",
+      "claude-opus-4.8", "claude-opus-5", "claude-opus-5.5",
+      "claude-sonnet-4.5", "claude-sonnet-5", "gemini-3-flash-preview",
+      "gemini-3.1-pro-preview", "gemini-3.5-flash", "gemini-3.6-flash",
+      "gemini-3.7-flash", "gpt-5.3-codex", "gpt-5.4", "gpt-5.4-mini",
+      "gpt-5.5", "gpt-5.6-luna", "gpt-5.6-sol", "gpt-5.6-terra",
+      "kimi-k2.7-code", "kimi-k3", "mai-code-1-flash-picker"
+    ]
+  },
+  "protected_reference_report_id": "8edb4de4-0ceb-46c5-abca-388cd690d518",
+  "ownership": {
+    "knowledge": "External to Tasseo; this portable skill repository",
+    "source_of_truth": "Live Staging MCP resources and their immutable native evidence",
+    "migration": "Move the whole skill directory; rebind IDs only after verification. No machine-specific paths or session IDs are required."
+  }
+}
