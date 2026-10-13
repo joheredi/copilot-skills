@@ -93,8 +93,26 @@ exceptions explicitly; do not hide them inside numerical tolerances.
 
 Evaluate raw ingestion versus cost-aware hybrid backfill. Historical aggregate
 reuse is acceptable only when it satisfies the analytical and evidence contracts
-and has a verified MCP publication path. Never assume an external producer
-endpoint is an MCP tool or that quantiles can be reconstructed from averages.
+and has a supported publication path with a named executor. Agent-authored
+Tasseo writes still require MCP; an operator-owned one-off external producer
+job is a separate valid backfill path. Missing MCP publication alone does not
+block that architecture. Verify grants, versions and receipts rather than
+assuming publication happened. Never assume an external producer endpoint is
+an MCP tool or that quantiles can be reconstructed from averages.
+
+Keep source acquisition and preparation separate from Measure calculation.
+Establish the window, population, deduplication and agent scope upstream;
+calculate over the admitted input rather than rediscovering source semantics.
+Prepared inputs must preserve required support, weighting, distributions and
+evidence. Do not expand Measure access merely because one attempted Selection
+fails; investigate existing supported input contracts first.
+
+Before declaring a blocker, identify the required outcome, failed route,
+evidence, executor and supported alternatives. A route-specific failure is not
+proof that the migration requires a platform change. Separate investigation,
+operator handoff, optional UX gaps and confirmed delivery blockers. Missing MCP
+chart locators does not establish missing trace evidence or a broken UI.
+Verify the evidence-navigation contract the operator actually requires.
 
 If evidence is insufficient, an authorized exploratory draft is allowed, labeled
 with its unknowns. Block **verified migration** and operational cutover until

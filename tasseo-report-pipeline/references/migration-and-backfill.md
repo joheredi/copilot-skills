@@ -60,7 +60,7 @@ Compare applicable choices rather than treating raw intake as mandatory:
 | --- | --- | --- |
 | Native raw/run import | Recalculation, member context, exact drill-down | Authorized availability, volume/budgets, retention, completeness, native source parity |
 | Existing native facts | Avoid duplicate intake/calculation | Population/schema/version/producer equivalence, retained provenance, required revisions |
-| Verified external aggregates | Avoid unnecessary historical raw ingestion | Sufficient statistics, lineage, approved reduced drill-down, active definition/grant/authority, supported MCP write |
+| Verified external aggregates | Avoid unnecessary historical raw ingestion | Sufficient statistics, lineage, approved reduced drill-down, active definition/grant/authority, supported publication with a named executor |
 | Hybrid | Aggregate history plus native incremental future data | Explicit handoff boundary, common semantic contract, overlap validation, correction/authority rules |
 
 Choose the least expensive strategy that satisfies the contract, not simply
@@ -77,7 +77,8 @@ For every planned aggregate, answer:
    weights, distribution information, covariance/pairing, uncertainty inputs?
 4. Can it reproduce the approved downstream outputs and corrections?
 5. What source IDs, versions, hashes, dependency/lineage and audit evidence exist?
-6. Is the intended write/producer-authority path actually supported by MCP?
+6. Who publishes: the agent through MCP, or an operator-owned external job?
+   Is that executor's publication/producer-authority path supported and verified?
 
 Do not average averages without the appropriate support/weights. Do not average
 medians, P25/P75, P95, confidence bounds, or ratios to reconstruct pooled facts.
@@ -91,6 +92,11 @@ to make an external aggregate appear natively drillable.
 
 ## Backfill execution gates
 
+- A one-off external producer job is a valid historical backfill mechanism,
+  separate from native future intake and calculation. Missing MCP publication
+  need not block preparation or that operator-owned execution path. Preserve
+  the MCP-only boundary for agent-authored Tasseo writes; do not hide a direct
+  endpoint call inside a script or automation to bypass it.
 - Confirm the historical range, granularity, approved partitions, and total
   volume/time/operation budgets. Keep effective time distinct from import time.
 - Match active Definition/series/value schemas, producer grant/version,
@@ -99,7 +105,8 @@ to make an external aggregate appear natively drillable.
 - Publish candidate/shadow facts and compare them before an authorized authority
   cutover where supported. Registration/grant/authority changes remain distinct
   from publishing the observations.
-- Use native deterministic idempotency for each batch; persist receipts, range,
+- Use the supported publisher's deterministic idempotency for each batch;
+  persist receipts, range,
   counts and hashes. Retry the same logical submission after uncertainty;
   inspect it before using a fresh key. A correction uses native supersession,
   not deletion or rewriting immutable history.
@@ -108,11 +115,21 @@ to make an external aggregate appear natively drillable.
 - Validate the history/future handoff: boundaries, overlapping periods,
   population coverage, compatible versions, producer authority, and late data.
   Avoid double counting or a gap at the cutover.
-- Stop on missing MCP publication capability, exhausted budget, unexpected
-  schema/population differences, or unverified authority. Offer a supported
-  alternative and obtain a revised plan; never downgrade quietly.
+- Stop the affected publication on exhausted budget, unexpected schema or
+  population differences, unverified authority, or no supported path for its
+  executor. Missing MCP capability blocks agent-direct publication; evaluate
+  an operator-owned external job before calling the backfill itself blocked.
+  Continue independent approved preparation; obtain revised approval when the
+  executor, scope or analytical/evidence contract changes.
 
 ## Reader and operator disclosure
+
+Specify required evidence access separately for compact history and native
+future data. Approved limited historical drill-down does not require full raw
+imports. A verified report-to-observation-to-source-traces path may satisfy an
+evidence contract without direct chart-cell selection; distinguish its whole
+input population from metric-specific contributors. If exact cell contributors
+are required, keep that gate until verified or explicitly revised.
 
 Keep an operator-facing mapping/differences record and concise native report
 methodology. Expose consequential differences: clock/window, coverage,

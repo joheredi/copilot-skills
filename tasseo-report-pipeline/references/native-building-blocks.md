@@ -49,6 +49,18 @@ proposal acceptance, Project installation, delivery, or source connectors.
 
 ## Contracts worth understanding
 
+- Keep input preparation outside Measure calculation: source discovery chooses
+  runs and windows; supported intake/selection prepares deduplicated, scoped
+  inputs; the Measure computes over that admitted population. A calculation
+  should not need delivery EventTime to rediscover its window. Effective time
+  and explicitly required calculation controls remain separate concerns.
+- A step/verdict query rejected against a pinned trace projection establishes
+  an input-contract mismatch in that route, not a requirement to expose more
+  source internals to Measures. Inspect intended input grain and supported
+  preparation contracts before proposing an extension. Correctly scoped
+  per-task quantities can avoid requiring the calculation to know agent depth;
+  grading inputs must retain criterion identity, applicability and support.
+  Do not assume arbitrary transforms or prepared-row intake are supported.
 - Report queries and rendering do not grant source access. Saved inputs and
   audience requirements must remain compatible with the approved reader audience.
 - Declared Measure acquisitions can pin observation IDs/hashes for one report
@@ -58,6 +70,13 @@ proposal acceptance, Project installation, delivery, or source connectors.
   Fresh custom objects/reducers require explicit provenance, and repeated/nested
   views need stable identities. Aggregate observations without trace members do
   not become clickable by pointing at the whole report dataset.
+- Separate evidence existence from navigation and verification. Missing
+  published fingerprints, provenance hashes or view IDs can block the MCP
+  mark resolver without proving UI drill-down or observation source sets are
+  unavailable. Inspect supported observation/source-set/trace navigation and
+  verify its actual live behavior. Whole-observation membership is not exact
+  metric-cell membership. Direct cell drill-down is a delivery gate only when
+  required by the approved evidence contract; do not silently relax that gate.
 - Measure series keys define comparable populations. Run IDs, source revision,
   producer, and timestamps are normally provenance, not new trend keys. A
   genuine change in comparison population must not accidentally join one trend.
@@ -85,11 +104,46 @@ registration, grants, effective-time authority, and observation publication are
 distinct operations. Non-secret publisher metadata is not a grant or publish
 operation. A credentialed endpoint is not MCP.
 
-Discover a supported MCP write path and its validation/idempotency contract.
-If absent, keep the aggregate design as an option, mark implementation blocked,
-and ask for supported operator/admin setup or a revised native approach.
-Never solicit a producer secret or generate a curl workaround. Operator setup
-does not authorize this agent to publish through a direct endpoint.
+Identify the publication executor before assessing the write path:
+
+- For agent-authored publication, discover a supported MCP operation and its
+  validation/idempotency contract. Its absence blocks this agent's direct
+  publication, not every external-producer design.
+- An operator-owned one-off external producer job can publish prepared
+  historical facts through its supported external contract. Prepare a bounded
+  handoff with validated payloads, exact definition versions, required grants,
+  authority periods, idempotency/recovery and receipt-verification steps.
+  Mark the handoff pending until real publication and persisted facts are
+  verified; external origin must not impersonate native provenance.
+- Distinguish that external job from a Tasseo-hosted Automation. Read the
+  deployed runtime before claiming it can invoke a producer. Native Measure
+  execution is not external producer publication; approved webhook bindings
+  do not imply arbitrary HTTP, secret access or executable support.
+
+Never solicit a producer secret or use a direct endpoint as an MCP workaround.
+Operator setup does not authorize this agent to publish outside MCP. Do not
+declare a source fix necessary merely because no MCP publication tool exists.
+
+## Classify gaps before stopping
+
+For each suspected blocker, record the required outcome, attempted route,
+observed failure, intended component boundary, available alternatives, executor
+and next bounded check. Investigate technical unknowns within approved scope
+instead of asking for platform-change authorization prematurely.
+
+Use these distinctions:
+
+| Classification | Response |
+| --- | --- |
+| Unsupported attempted route | Evaluate another supported route without weakening the contract |
+| Unverified architecture or UI behavior | Investigate; do not label it impossible or successful |
+| Operator/admin-only operation | Give an exact handoff and verify completion; continue independent work |
+| Optional UX limitation | Disclose it and preserve required evidence access |
+| Required outcome unavailable through supported paths | State a confirmed scoped blocker and seek a revised plan or platform authority |
+
+Reporting approval does not authorize application changes or deployment.
+Removing an overstated blocker does not prove the remaining implementation
+works, grant new authority, or establish operational cutover.
 
 ## Refresh the knowledge, not the implementation copy
 

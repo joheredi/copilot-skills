@@ -31,9 +31,12 @@ Never persist credentials or raw private transcripts in it.
    Read complete saved source, including continuations, before replacing the
    ordered draft. Preserve block identities and unrelated work. Test-only
    acquisitions must not leak into normal invocation.
-5. **Backfill:** execute the approved strategy only after schema/authority/write
-   capability gates. Use bounded partitions, track receipts and budget,
-   inspect errors and reruns, and verify the historical/future handoff.
+5. **Backfill:** execute or hand off the approved strategy only after
+   schema/authority/executor-specific publication gates. For an operator-owned
+   external job, prepare validated inputs and exact run/recovery instructions;
+   verify its receipts and persisted facts before claiming publication.
+   Use bounded partitions, track receipts and budget, inspect errors and
+   reruns, and verify the historical/future handoff.
 6. **Orchestration:** inspect the deployed automation runtime before source
    authoring. Use supported durable calls, explicit inputs and bounded native
    idempotency. Validate, publish and test only within the approved plan.
@@ -54,6 +57,14 @@ For required exact drill-down, resolve representative **published** marks and
 page their contributors. Custom summaries need explicit exact provenance and
 stable nested keys. Historical external aggregates without trace members must
 show honest lineage/limitations, not misleading interactions.
+
+If resolver metadata is absent, record precisely what cannot be verified;
+do not infer that evidence or all UI navigation is absent. Inspect supported
+observation/source-set/trace navigation and verify the agreed reader path.
+An alternative must satisfy the approved evidence contract, not relabel the
+whole input set as exact metric contributors. Keep strict cell-level gates
+when required; otherwise classify the limitation as verification or UX work
+rather than a migration-wide blocker.
 
 Run analytical and same-input numerical tests from the plan. For UI-only
 changes, compare a same-cycle baseline so a fresh cohort cannot conceal a
@@ -117,3 +128,10 @@ save environment, roles/IDs, revisions, plan approval, completed/pending
 operations, run IDs, evidence locations, remaining budgets and next action.
 Re-read state before resuming. After an uncertain write, recover its existing
 native job/idempotency identity; do not submit a different operation blindly.
+
+Before stopping for platform work, distinguish a failed implementation route
+from an unavailable required outcome. Recheck existing input-preparation and
+evidence-navigation boundaries, then identify any operator-only handoff.
+Record a proven capability gap without promoting an untested source fix to a
+prerequisite. Keep investigating alternatives within scope; request separate
+application/deployment authority only when that work is actually justified.
