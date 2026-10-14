@@ -78,3 +78,39 @@ active unless the user authorized a pause.
   bypass a trigger, purge an organization, hide a report, or blank its source.
 - Do not install polling schedules or loop indefinitely on an unchanged blocker.
   Preserve the baseline and next bounded step for recovery.
+
+## Native alert or delivery appears missing
+
+Inspect the [native-alert lifecycle](native-alerts.md) before rerunning anything.
+Distinguish missing dated evidence, indeterminate evaluation, historical
+backfill, a live occurrence, and pending/failed issue delivery. A statistical
+`ALERT` without a live incident after backfill is not itself an outage.
+
+An issue link cannot be inferred from a draft or submitted GitHub form.
+Read the persisted native association and delivery evidence. A report export
+failure can coexist with a valid alert on newer dated facts; do not recover the
+alert merely because the reader remains on its last-good snapshot.
+
+## Temporal-policy compiler diagnostic
+
+Observed signature:
+
+```text
+Cannot find module '@measure/runtime' or its corresponding type declarations.
+```
+
+When generated temporal schema declarations reference the runtime module:
+
+1. Capture the target Measure schema/version and compiler diagnostics.
+2. With scoped diagnostic authority, compare a minimal policy that does not
+   read the temporal field against the intended policy. If both fail on that
+   module reference, distinguish the compiler's declaration environment from
+   invalid user code; retain uncertainty about other possible failures.
+3. The verified repair supplied existing generated runtime declarations to
+   the compiler worker. This is a platform diagnostic, not permission to patch,
+   deploy, remove temporal fields, cast away types, or bypass compilation.
+4. After an authorized platform repair, verify the minimal and full policy
+   compile on the target deployment and that incorrect types still fail.
+
+Keep diagnostic compilation separate from policy activation, evaluation, and
+notification. Do not assume a fix verified in Staging exists in Production.

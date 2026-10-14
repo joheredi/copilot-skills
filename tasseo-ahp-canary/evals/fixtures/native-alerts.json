@@ -1,0 +1,99 @@
+{
+  "schema_version": 1,
+  "description": "Synthetic normalized evaluation contexts, not literal MCP responses. Never ingest these identities, observations or delivery records into a live system.",
+  "scenarios": {
+    "historical-backfill": {
+      "policy": {"enabled": true, "autoRecover": false},
+      "publication_origin": "backfill",
+      "frame": {"verdict": "alert", "provisional": false, "cycle_end": "2030-01-01T00:00:00.000Z"},
+      "evaluation": {"state": "violating"},
+      "live_occurrences": [],
+      "persisted_issue_url": null
+    },
+    "newer-detector-evidence": {
+      "publication_origin": "live",
+      "reader": {"cycle_end": "2030-01-01T00:00:00.000Z", "successful_receipt_id": "synthetic-receipt-old"},
+      "dated_frame": {"cycle_end": "2030-01-02T00:00:00.000Z", "verdict": "alert", "provisional": false},
+      "candidate_publication": {"status": "failed", "artifact": null},
+      "live_occurrence": {"id": "synthetic-alert-a", "observation_id": "synthetic-dated-next"}
+    },
+    "source-label-contamination": {
+      "acquisitions": [
+        {
+          "label": "Synthetic current Frames",
+          "rows": [{
+            "observation_id": "synthetic-current-a",
+            "effective_at": "2030-01-01T00:00:00.000Z",
+            "view_kind": "current",
+            "model": "synthetic-model-a",
+            "case": "say_hello",
+            "cadence": "daily",
+            "computation_id": "synthetic-computation-a",
+            "values": {"cycle_end": "2030-01-02T00:00:00.000Z", "current_median": 12, "verdict": "alert"}
+          }]
+        },
+        {
+          "label": "Synthetic dated policy Frames",
+          "rows": [{
+            "observation_id": "synthetic-dated-a",
+            "effective_at": "2030-01-02T00:00:00.000Z",
+            "view_kind": "cycle",
+            "model": "synthetic-model-a",
+            "case": "say_hello",
+            "cadence": "daily",
+            "computation_id": "synthetic-computation-a",
+            "values": {"cycle_end": "2030-01-02T00:00:00.000Z", "current_median": 12, "verdict": "alert"}
+          }]
+        }
+      ],
+      "reader_selection": "all acquisitions combined before the current-view guard"
+    },
+    "business-field-mismatch": {
+      "current": {"computation_id": "synthetic-computation-a", "values": {"current_median": 12, "verdict": "alert"}},
+      "dated": {"computation_id": "synthetic-computation-a", "values": {"current_median": 99, "verdict": "alert"}}
+    },
+    "continuous-violation-retry": {
+      "policy_id": "synthetic-policy",
+      "series": {"model": "synthetic-model-a", "case": "say_hello", "cadence": "daily"},
+      "evaluations": [
+        {"cycle_end": "2030-01-01T00:00:00.000Z", "state": "violating", "occurrence_id": "synthetic-alert-a"},
+        {"cycle_end": "2030-01-02T00:00:00.000Z", "state": "violating", "occurrence_id": "synthetic-alert-a"}
+      ],
+      "delivery": {
+        "state": "retrying",
+        "external_creation_outcome": "unknown after timeout",
+        "persisted_issue_url": null,
+        "candidate_issue_marker": "synthetic-alert-a",
+        "candidate_issue_url": "https://github.example.invalid/fixtures/issues/1"
+      }
+    },
+    "closure-realert": {
+      "policy": {"autoRecover": false},
+      "old_occurrence": {"id": "synthetic-alert-a", "github_closed_at": "2030-01-02T22:00:00.000Z"},
+      "old_evidence": {"effective_at": "2030-01-02T00:00:00.000Z", "recorded_at": "2030-01-03T01:00:00.000Z"},
+      "new_evidence": {"effective_at": "2030-01-03T00:00:00.000Z", "recorded_at": "2030-01-03T02:00:00.000Z"},
+      "old_issue_reopened_at": "2030-01-03T03:00:00.000Z"
+    },
+    "grouping-request": {
+      "occurrences": [
+        {"id": "synthetic-alert-a", "series": {"model": "synthetic-model-a", "case": "say_hello", "cadence": "daily"}},
+        {"id": "synthetic-alert-b", "series": {"model": "synthetic-model-b", "case": "say_hello", "cadence": "daily"}}
+      ],
+      "shared_root_cause": "unknown",
+      "approved_native_group_lifecycle": false
+    },
+    "trace-export-only": {
+      "producer": {"otel_tasseo_enabled": true, "tasseo_automation_url": null, "tasseo_automation_input": null},
+      "receiver": {"trigger": "api.input", "accepted_inputs": ["cycleEnd", "computedAt"]},
+      "daily": {"trigger": "schedule.cron"},
+      "possible_callback_mode": {"input": "run_ids", "completion_unit": "one evaluation issue"}
+    },
+    "temporal-compiler": {
+      "measure_schema": {"temporal_field": "ZonedDateTime"},
+      "diagnostic": "Cannot find module '@measure/runtime' or its corresponding type declarations.",
+      "minimal_constant_policy_reads_temporal_field": false,
+      "minimal_constant_policy_has_same_diagnostic": true,
+      "platform_change_authorized": false
+    }
+  }
+}

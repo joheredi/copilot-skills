@@ -51,6 +51,7 @@ it does not replace the statistical or window validators.
 | Field | Meaning |
 | --- | --- |
 | `effective_at` at the current gauge | Persisted series address |
+| `effective_at` at a dated cycle fact | Advancing cycle boundary used by native detection |
 | `cycle_end` | End of the closed execution cohort |
 | `computed_at` | Explicit logical caller/schedule point |
 | Frame `recorded_at` | Actual persisted observation write time |
@@ -59,6 +60,12 @@ it does not replace the statistical or window validators.
 | Clock `recorded_at` | Actual persisted check write time |
 
 Never substitute one of these for another to satisfy a guard.
+
+The policy consumes dated source facts without recomputing the comparison.
+Check the bound registry, harness, scenarios, cadences, methodology, schema
+and knobs contract against the live definition. Provisional, unusable, or
+out-of-scope facts are indeterminate, not healthy and not violating. Preserve
+the source distinction between `watch` and `alert`.
 
 ## Fail-closed behavior
 

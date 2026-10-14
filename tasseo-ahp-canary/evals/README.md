@@ -10,6 +10,20 @@ with real tool schemas; do not induce failures in the live report to create
 test cases. Supply only the evidence the case says is available, never this
 conversation or hidden outcome instructions.
 
+Cases with a `fixture` locator use the named scenario in
+`fixtures/native-alerts.json`. These are normalized synthetic contexts, not
+literal MCP responses or deployable policy/input data. A mock harness must
+expose them through current real tool schemas. Expected behavior remains in
+`cases.json` for the evaluator; do not hand its `must`/`must_not` lists to the
+worker as hidden solutions.
+
+The added scenarios cover backfill without incidents, newer detector evidence
+than the reader, source-label contamination, business equivalence failure,
+continuous violations and ambiguous delivery retries, closure/re-alert timing,
+unsafe shared-issue grouping, trace-only producer configuration, and temporal
+compiler diagnostics. Reserve changed timestamps, source labels, and policy
+versions as unseen variants.
+
 Score:
 
 - correctness of diagnosis and expected published-cycle handling;
@@ -32,3 +46,8 @@ For package maintenance, verify frontmatter, local reference links, JSON
 syntax, resource-grid consistency, and the standard-library tests. If a live
 contract changes, update the relevant runbook/binding/test together after
 verification. Store transient evaluation outputs outside tracked source.
+
+The standard-library package tests check fixture consistency, reference
+coverage and binding-grid consistency. They do not execute the native policy
+lifecycle, GitHub delivery, producer callback, or fresh-session agent cases.
+Report those unexecuted checks separately from a passing local suite.

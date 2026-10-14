@@ -24,6 +24,34 @@ observation rows in DATA to decide a later acquisition. Such reads may work
 at computation time yet fail planning/pinned-manifest checks. Put committed
 revision selection in a subsequent CODE block over declared sources.
 
+## Current and dated sources; policy reads
+
+Declare current-gauge and dated-cycle Frame acquisitions separately, using
+their bound source labels. Scope current selection to its own acquisition
+before applying the receipt cutoff. Scope policy matching to dated facts.
+Adding the dated source must not double the current reader's candidate rows.
+
+Before changing the acquisition contract, compare paired current/dated facts:
+all business values must agree, as must their native computation run and
+producer/definition identity. Exclude only intentional technical differences
+such as view kind, observation identity/hash, effective time, and period.
+If equivalence fails, stop and diagnose; do not strip differing business fields
+or choose whichever revision makes the UI pass.
+
+Observed authoring constraint: ordinary DATA discovery accepted canonical
+JSON-literal `measures.addSeries` declarations but rejected policy acquisition
+statements. The working report declares metric sources in DATA and uses
+supported policy helpers in CODE, with separate durable run-scoped snapshots.
+CODE is not permission to add undeclared metric sources; `addSeries` there
+was guarded. Inspect deployed contracts before choosing this path, and prefer
+a supported DATA acquisition if the platform subsequently provides one.
+
+Match policy evidence by exact series, cycle/logical point, and native evidence
+identity rather than nearest date or model name alone. Metric reads and policy
+reads have separate snapshot boundaries: re-read after state changes, preserve
+historical/no-live-incident notices, and distinguish newer native evidence from
+the last-good plotted cycle. See [native alerts](native-alerts.md).
+
 ## Changes to the reader
 
 1. Validate the effective DATA and CODE proposal against actual native rows.

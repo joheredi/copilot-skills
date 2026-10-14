@@ -33,7 +33,30 @@
     "reader_clock": {
       "id": "0ae65849-071d-4ce7-9fe6-51dd6ae51e62",
       "slug": "canary.ahp-execution-reader-clock"
+    },
+    "retired_signal": {
+      "id": "7bbe1870-7bc2-48f8-85bc-9c9fb560efeb",
+      "slug": "canary.ahp-committed-alert-signal",
+      "role": "Historical supervised pilot; retain evidence, do not reactivate without scoped authorization"
     }
+  },
+  "policies": {
+    "dated_comparisons": {
+      "id": "8668307e-9111-4bda-984f-1fa69ccf284c",
+      "slug": "canary-ahp-dated-comparison-alerts",
+      "binding_verified_at": "2026-10-14T00:10:56.550Z",
+      "role": "Native dated-fact detector; rediscover enabled state, active version, recovery settings and delivery configuration"
+    },
+    "retired_signal": {
+      "id": "c141f725-02d7-42e8-a58e-f469de9e5832",
+      "slug": "canary-ahp-committed-comparison-alerts",
+      "binding_verified_at": "2026-10-14T00:10:56.550Z",
+      "role": "Retired supervised pilot; inspect retained history only unless reactivation is explicitly authorized"
+    }
+  },
+  "source_labels": {
+    "current_frames": "Committed current Frames",
+    "dated_policy_frames": "Dated policy Frames"
   },
   "automations": {
     "main": {

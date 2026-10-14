@@ -46,6 +46,27 @@ Do not treat the original target screenshot as a data source.
   live and exported behavior separately instead of promising active links
   in an intentionally inert artifact.
 
+## Native alert and issue controls
+
+- Keep controls within each model/scenario/cadence comparison, not a separate
+  competing filing table. Offer issue-management controls only for eligible,
+  non-provisional source `ALERT` comparisons with an exact native occurrence.
+- Show a persisted issue link when present; otherwise navigate to the exact
+  native Alert for management. Historical violations with no live incident
+  need an honest backfill/no-live-incident notice, not an invented Alert ID.
+- A submitted GitHub new-issue form does not persist a Tasseo association.
+  Do not restore direct filing forms or infer links from titles/search matches.
+- Use supported native external-link components and verify their live behavior.
+  Raw Markdown HTML `target="_blank"` was subject to sanitization; exported
+  artifacts can deliberately inert links.
+- Match exact evidence, not just model/cadence or nearby timestamps. If the
+  native alert is newer than the displayed last-good cycle, label that distinction
+  without changing plotted values or implying those values caused the alert.
+- Do not render shared-parent/group ownership from identical issue URLs.
+  Investigation grouping is external unless separately designed and approved.
+
+See [native alerts](native-alerts.md) for lifecycle and disclosure checks.
+
 ## Formatting and verification
 
 Use an en dash for displayed ranges, consistent percentage precision, trimmed
