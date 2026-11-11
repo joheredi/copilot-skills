@@ -1,177 +1,108 @@
 ---
 name: design
-description: Produces a grounded implementation design by comparing viable approaches, recommending one, running parallel multi-model critique, reconciling feedback, and revising the design.
+description: Collaboratively design a feature or project with the user through a one-question-at-a-time interview that clarifies requirements, pushes back on weak assumptions, and produces a concise, principled design doc (building blocks, responsibilities, boundaries) favoring KISS and general-over-special-case solutions, then gets it reviewed by a different-model-family subagent. Use when the user wants to design, architect, spec, or brainstorm a feature or project before implementation. Not for implementation, task breakdowns (use tasksmith), or grilling an arbitrary plan (use grill-me).
 ---
 
-Variables:
-- `<PlanPath>`: primary plan, findings doc, or latest investigation artifact. Default: latest relevant session artifact.
-- `<OutputPath>`: optional output path for the design artifact. Default: adjacent to `<PlanPath>`.
-- `<Topic>`: optional feature or subsystem under review. Default: inferred from `<PlanPath>`.
+# Design
 
-Create or update an implementation design based on `<PlanPath>` for `<Topic>`.
+Goal: a design the user fully understands and agrees with, that is as simple as
+the problem allows, and that solves the general problem when that is no more
+complex than solving the specific case. Keep this process itself lightweight;
+scale depth to the size and risk of the decision.
 
-This skill is for implementation-oriented design review, not broad product ideation and not a backlog decomposition pass.
+## 1. Understand before asking
 
-## Objectives
+- Read the relevant code, docs, and existing designs first. Never ask the user
+  something you can look up; state what you found instead.
+- Research prior art or industry practice when it would change the options.
+- Start from the problem, not the proposed solution: who needs this, what they
+  do today, why now, what evidence exists, what success looks like, what is out
+  of scope (non-goals), and how much effort it deserves (appetite).
 
-1. Read and understand the latest plan, findings, and relevant source materials.
-2. Identify the main design decision(s) that still matter for implementation.
-3. Develop at least 2 viable approaches grounded in the current repository and constraints.
-4. Compare the approaches across implementation complexity, consistency with existing architecture, operational risk, testing impact, migration cost, and long-term maintainability.
-5. Recommend one approach with a clear rationale.
-6. Spawn 3 parallel critique subagents from different model families.
-7. Reconcile the critique feedback carefully, separating valid findings from weak or conflicting feedback.
-8. Revise the original design using only relevant, valid, non-contradictory improvements.
-9. Produce a final design artifact plus a concise review log showing what changed and why.
+## 2. Interview
 
-## Core principles
+- Ask exactly one question per turn with the ask-user form. Put context,
+  trade-offs, and counterexamples in brief prose before the form; keep form
+  options as short labels and mark your recommendation with a one-line reason.
+- Order questions by dependency: resolve decisions that constrain others first.
+- Stop when every material decision is resolved or explicitly deferred as an
+  open question. Do not ask about details that won't change the design.
 
-1. Ground the design in the current codebase, docs, and latest findings.
-2. Make sure to research online, industry standard and best practices or prior art.
-3. Explore multiple viable approaches before converging.
-4. Prefer approaches aligned with existing architecture and repository conventions unless there is a strong reason to change course.
-5. Be explicit about tradeoffs.
-6. Treat critique as adversarial input, not truth.
-7. Do not accept feedback just because multiple models said it.
-8. Preserve useful parts of the original design when critique does not invalidate them.
-9. Optimize for implementation clarity, not theoretical elegance.
+## 3. Push back
 
-## Operating rules
+Do not be agreeable by default. Your job is a good design, not approval.
 
-1. Inspect the current plan/findings first before proposing approaches.
-2. If the repository already constrains the solution direction, treat that as a real constraint.
-3. Compare at least 2 viable approaches. You may include more if they are meaningfully distinct.
-4. Do not include fake alternatives that are obviously inferior just to satisfy the comparison requirement.
-5. For each approach, analyze:
-   - fit with current architecture
-   - implementation scope
-   - migration or rollout impact
-   - testing strategy implications
-   - operational risk
-   - developer ergonomics
-   - future extensibility
-6. Recommend exactly one approach unless the evidence is genuinely insufficient.
-7. Keep the initial design draft concise but implementation-oriented before sending it to critique.
+- Challenge unsupported assumptions as a question with a concrete
+  counterexample or failure scenario.
+- When the user prefers an option that is more complex or narrower than
+  necessary, put it side by side with the simpler or more general alternative
+  and its trade-offs.
+- Change your position only for new evidence or requirements, not insistence.
+  When you still disagree, say "I disagree because …", then record the user's
+  decision and the dissent in the doc.
+- Flag scope creep, speculative features, and requirements that are really
+  solutions in disguise.
 
-## Required initial design structure
+## 4. Design principles (apply to every building block)
 
-Produce an initial design with these sections:
+- **Reuse first.** Prefer using or extending existing capabilities over new
+  machinery. Every new component, layer, abstraction, or config option must
+  be justified by a current requirement.
+- **General interface, minimal capability.** Ask: what is the simplest
+  interface that covers all current needs? Prefer a general mechanism over a
+  use-case-specific one when it is not more complex; defer speculative
+  capabilities (YAGNI).
+- **Deep modules, clear ownership.** Each block owns one responsibility and
+  hides one decision likely to change. Name what it owns, what it hides, and
+  its interface. Watch for knowledge leaking across boundaries and for changes
+  that would ripple through many blocks.
+- **Define special cases away** where a single normal behavior can replace
+  them without hiding real failures.
+- **Design it twice.** Before drafting, present at least two materially
+  different approaches, including the simplest viable one, with a
+  recommendation.
+- **Premortem.** Assume the design failed in six months; list the likely
+  causes and the cheapest way to test the riskiest assumption.
 
-1. **Context**
-   - what problem is being solved
-   - what inputs were reviewed
-   - relevant constraints
+## 5. Write the design doc
 
-2. **Current state**
-   - what exists today
-   - what is already decided
-   - what remains to be decided
+Write `design-<topic>.md` in the session files folder (copy into the repo only
+if asked). Keep it as short as the design allows:
 
-3. **Approach options**
-   - at least 2 viable approaches
-   - architecture sketch for each
-   - pros, cons, and risks for each
+1. Problem and evidence
+2. Goals / non-goals
+3. Requirements and constraints
+4. Options considered and decision (with trade-offs)
+5. Architecture: building blocks, responsibilities, interfaces, boundaries
+   (what each hides), how they fit together, and the existing code paths or
+   modules each block touches
+6. Risks and premortem
+7. Open questions and recorded dissent
 
-4. **Recommendation**
-   - chosen approach
-   - why it wins
-   - why the alternatives were rejected
+No implementation task list; offer tasksmith with this doc's path as its
+`<PlanPath>`.
 
-5. **Implementation shape**
-   - affected subsystems / files / layers
-   - data flow and API impact
-   - migration / rollout / testing implications
+## 6. Independent review
 
-6. **Known risks / open questions**
-   - only unresolved items that materially affect implementation
+Skip only for trivial designs or when the user opts out.
 
-## Parallel critique phase
+- Launch one `task` subagent with `agent_type: "rubber-duck"` and a model from
+  a different family than yours: `model: "gemini-4-argon"` by default, or
+  `model: "gpt-6.1-sol"` if you are Gemini. If unavailable, pick another model
+  from a different family and tell the user which one you used.
+- Give it only the doc path, the requirements, and read access to the
+  codebase, not the conversation, with this brief:
 
-After the initial design draft is complete, spawn exactly 3 parallel critique subagents.
+  > Review this design against its stated requirements and constraints, not
+  > the author's confidence. Report only material issues: unnecessary
+  > complexity or machinery, special-casing where a general solution is as
+  > simple, speculative generality, unclear responsibilities or leaking
+  > boundaries, contradictions, missing decisions, and unaddressed risks. For
+  > each: severity, the specific doc evidence, a failure scenario, confidence,
+  > and a concrete remedy or question. Separate facts from assumptions. Do not
+  > invent requirements. Omit style nitpicks. "No material findings" is a
+  > valid answer.
 
-Use the strongest available model from each family in the current session, preferring:
-- OpenAI: GPT-5.4 or better available GPT-5.x reasoning/coding model
-- Anthropic: Claude Opus 4.6 or better available Claude-family reasoning model
-- Google: Gemini 3 Pro or better available Gemini-family reasoning model
-
-If a named model is unavailable, use the strongest available model in that family and record the substitution.
-
-Each critique subagent must:
-- review the draft independently
-- challenge assumptions
-- look for architectural inconsistencies
-- identify missing edge cases
-- identify testing, migration, and rollout weaknesses
-- call out over-engineering or unjustified complexity
-- suggest concrete improvements
-- avoid rewriting the design from scratch unless fundamentally flawed
-
-Each critique subagent must return feedback in this structure:
-
-1. **Top concerns**
-2. **Potential design flaws**
-3. **Missing considerations**
-4. **Over-engineering / unnecessary complexity**
-5. **Suggested changes**
-6. **Confidence and uncertainty**
-
-## Critique reconciliation rules
-
-After all 3 critiques return:
-
-1. Consolidate all feedback into a single review matrix.
-2. Group overlapping feedback together.
-3. Mark each item as:
-   - accepted
-   - partially accepted
-   - rejected
-   - unresolved
-4. For each item, explain why.
-5. Prefer feedback that is:
-   - grounded in the repository or stated constraints
-   - specific and actionable
-   - consistent with the implementation goal
-6. Reject feedback that is:
-   - generic
-   - speculative without evidence
-   - contradictory to known constraints
-   - pushing unnecessary abstraction or redesign
-7. Do not bias toward majority vote alone.
-8. If critiques conflict, resolve the conflict explicitly.
-
-## Revision phase
-
-Revise the original design by applying accepted and partially accepted feedback.
-
-The revised design must:
-- preserve the original recommendation unless critique genuinely changes the conclusion
-- integrate valid improvements cleanly
-- remove ambiguities uncovered during critique
-- remain implementation-oriented and concise
-- be stronger than the original draft, not just longer
-
-## Required final output
-
-Produce:
-
-1. **Final revised design**
-2. **Critique summary**
-   - which models were used
-   - any substitutions
-3. **Feedback reconciliation log**
-   - accepted / partially accepted / rejected / unresolved items
-   - brief rationale for each
-4. **Delta summary**
-   - what changed from the original draft
-   - why those changes improved the design
-5. **Residual open questions**
-   - only items that still need human input or deeper investigation
-
-## Quality bar
-
-- Do not recommend an approach without comparing real alternatives.
-- Do not pretend alternatives are viable if they clearly are not.
-- Do not accept critique blindly.
-- Do not inflate the design with generic best-practice prose.
-- Do not produce a backlog; produce a design strong enough to later decompose into backlog work.
-- The final artifact should be executable by engineers without needing the chat history.
+- Verify each finding yourself. Update the doc for accepted findings; show the
+  user accepted vs rejected findings with reasons. One pass; no debate loops.
+- Ask the user to approve the final design.
