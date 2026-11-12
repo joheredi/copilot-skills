@@ -99,23 +99,9 @@ No implementation task list; offer tasksmith with this doc's path as its
 
 Skip only for trivial designs or when the user opts out.
 
-- Launch one `task` subagent with `agent_type: "rubber-duck"` and a model from
-  a different family than yours: `model: "gemini-4-argon"` by default, or
-  `model: "gpt-6.1-sol"` if you are Gemini. If unavailable, pick another model
-  from a different family and tell the user which one you used.
-- Give it only the doc path, the requirements, and read access to the
-  codebase, not the conversation, with this brief:
-
-  > Review this design against its stated requirements and constraints, not
-  > the author's confidence. Report only material issues: unnecessary
-  > complexity or machinery, special-casing where a general solution is as
-  > simple, speculative generality, unclear responsibilities or leaking
-  > boundaries, contradictions, missing decisions, and unaddressed risks. For
-  > each: severity, the specific doc evidence, a failure scenario, confidence,
-  > and a concrete remedy or question. Separate facts from assumptions. Do not
-  > invent requirements. Omit style nitpicks. "No material findings" is a
-  > valid answer.
-
-- Verify each finding yourself. Update the doc for accepted findings; show the
-  user accepted vs rejected findings with reasons. One pass; no debate loops.
+- Invoke the `platform-architect-review` skill with the doc path, the
+  motivating use case, and the repository root.
+- Update the doc for accepted findings. If the verdict is "do not implement"
+  or "simplify," revisit the decision with the user rather than patching
+  around it. One pass; no debate loops.
 - Ask the user to approve the final design.
