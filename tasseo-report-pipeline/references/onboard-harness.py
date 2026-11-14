@@ -129,11 +129,12 @@ def delta_encode_int(vals):
     return [s[0]] + [s[i] - s[i - 1] for i in range(1, len(s))]
 
 
-def stage_qualify(client, agent, display_name, owning_team, window_start, cutoff):
+def stage_qualify(client, agent, suite_filter, display_name, owning_team, window_start, cutoff):
+    suite_clause = f'\n| where tostring(UserTags["suite"]) == "{suite_filter}"' if suite_filter else ""
     disc_q = f"""let Cutoff=datetime({cutoff});
 let Candidates=materialize(CESBenchmarkMetadataTable
 | where EventTime >= datetime({window_start}) and EventTime <= Cutoff
-| where Agent == "{agent}"
+| where Agent in ("{agent}", "Copilot CLI", "github-copilot-cli"){suite_clause if suite_filter else f' and Agent == "{agent}"'}
 | where tostring(UserTags["run"])=="workflow-scheduled" and tostring(UserTags["branch"])=="main"
 | distinct RunId);
 let Visible=CESBenchmarkMetadataV2View
@@ -549,6 +550,7 @@ CESBenchmarkTrajectoriesTable
         "displayName": display_name,
         "owningTeam": owning_team,
         "agentNames": [agent],
+        "suiteFilter": suite_filter,
         "canonicalHarness": agent,
         "defaultModeWhenMissingBeforeCutover": "default",
         "repeatExpectations": repeat_expectations,
@@ -1096,6 +1098,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--client", required=True)
     parser.add_argument("--agent", default="GitHub Copilot Cloud Agent")
+    parser.add_argument("--suite", default=None, help="Optional UserTags['suite'] filter (e.g. copilot-computer-use) when sharing Agent with CLI")
     parser.add_argument("--display-name", default=None)
     parser.add_argument("--team", default=None)
     parser.add_argument("--window-start", default="2026-10-13T00:00:00.000Z")
@@ -1106,7 +1109,7 @@ if __name__ == "__main__":
     disp = args.display_name or args.agent
     team = args.team or f"copilot-{args.client.lower()}-evals"
     if args.stage == "qualify":
-        stage_qualify(args.client, args.agent, disp, team, args.window_start, args.cutoff)
+        stage_qualify(args.client, args.agent, args.suite, disp, team, args.window_start, args.cutoff)
     elif args.stage == "prepare-daily":
         stage_prepare_daily(args.client, args.visible_from)
     elif args.stage == "prepare-cohort":
