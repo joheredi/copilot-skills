@@ -1,6 +1,6 @@
 ---
 name: tasseo-report-pipeline
-description: "Create native Tasseo reports and their data/refresh pipelines, or migrate an existing report with explicit analytical equivalence and transparent differences. Offer an optional requirements interview, discover live native capabilities, propose a scoped plan, then implement through MCP after approval. Supports Local, Staging, and Prod; includes an MSBench adapter and cost-aware historical backfills."
+description: "Create native Tasseo reports and their data/refresh pipelines, onboard a new evaluation harness (CLI, App, CCA, or partner harnesses) with 3 inputs, or migrate an existing report with explicit analytical equivalence and transparent differences. Offer an optional requirements interview, discover live native capabilities, propose a scoped plan, then implement through MCP after approval. Supports Local, Staging, and Prod; includes an MSBench adapter and cost-aware historical backfills."
 ---
 
 # Tasseo report pipeline
@@ -9,6 +9,32 @@ Build the simplest native architecture that answers the operator's questions
 and meets an approved analytical contract. Migrate meaning, not implementation
 shape or pixels. This is a general reporting skill, not the specialist for a
 particular Canary report.
+
+## Mandatory native-first diagnosis
+
+Before declaring a migration blocked or requesting new engines, capture
+bridges, connectors, or infrastructure, trace the required outcome through:
+
+`native intake -> Selection/preparation -> runner capture -> calculation -> publication -> reader`
+
+The ordinary Measure runner already freezes Selection results and exact source
+provenance. Trace/step/verdict capture is existing functionality; a specialized
+MSBench snapshot service or Project integration is not automatically required.
+Verify which input kinds and fields the selected authoring surface actually
+exposes before choosing a route.
+
+Inspect a comparable working native report and its backing Selection, Measure,
+and Automation when available. Separate authoring metadata/source-pin failures
+from capture, calculation, and publication failures. Require a minimal causal
+reproduction and a check of supported alternatives before promoting one route's
+failure into a missing-platform claim. A fix for one source kind does not prove
+another route or the whole migration is unblocked.
+
+Follow the [native-path investigation](references/native-building-blocks.md#mandatory-native-path-investigation)
+before making a blocker recommendation. Keep unresolved semantic requirements
+explicit; do not replace the false blocker with an unverified success claim.
+If the operator requires native features only, report a precise native
+capability gap rather than proposing a custom engine as the fallback.
 
 ## Authority and boundaries
 
@@ -72,6 +98,7 @@ the references needed for this task:
 
 | Task | Reference |
 | --- | --- |
+| Onboard a new evaluation harness (`client`, `agent`, `owningTeam`) or share the partner self-serve spec | [Harness onboarding](references/harness-onboarding.md) |
 | Choose native components or establish capability gaps | [Native building blocks](references/native-building-blocks.md) |
 | Port a report, prove parity, or design historical backfill | [Migration and backfill](references/migration-and-backfill.md) |
 | Discover/import MSBench data or preserve merged-run meaning | [MSBench adapter](references/msbench-adapter.md) |

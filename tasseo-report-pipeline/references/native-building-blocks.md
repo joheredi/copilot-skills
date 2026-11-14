@@ -47,6 +47,65 @@ Names above are discovery anchors. Do not guess missing arguments or invoke a
 tool before loading its schema. Explicitly mark unavailable producer publication,
 proposal acceptance, Project installation, delivery, or source connectors.
 
+## Mandatory native-path investigation
+
+Run this check before recommending platform work, asking approval for a capture
+bridge, or telling the operator to wait for a bug fix.
+
+1. **State the required result without choosing its architecture.** Preserve
+   approved membership, grain, source clock, grading/version, missingness,
+   weighting, evidence and reusable-fact requirements. Do not introduce a
+   specialized snapshot API or downgrade governed facts to report-only output
+   merely to make a chosen route work.
+2. **Trace the ordinary native path first.** The Measure runner prepares and
+   freezes Selection query results into immutable input artifacts and source
+   sets with exact provenance. Existing capture includes trace, step and verdict
+   relations. When authorized source is available, follow `prepareMeasureRun`
+   through `resolveExactMeasureSelection`, not only specialized snapshot helpers.
+   Rediscover current contracts; engine support alone does not prove that MCP,
+   the UI, or an installed integration can author the required Selection.
+3. **Compare a working native example.** Read its effective and published report
+   state, acquisition declarations, backing Measure/Selection, and relevant
+   Automation. Identify what actually supplies and freezes inputs. Reuse the
+   native responsibility split, not its registry, bucket membership, timing
+   assumptions, estimators or private resource bindings. Do not mutate the
+   reference merely to inspect it.
+4. **Localize the first failing boundary.** Distinguish compilation, persisted
+   input type/source pin, query planning, source authorization/availability,
+   immutable capture, arithmetic, and publication/reader selection. Compare the
+   declared input with stored metadata before concluding that capture is absent.
+   Inspect the actual scope of a proposed fix; a native-snapshot mapping fix
+   need not add ordinary step/verdict authoring.
+5. **Prove only the narrow diagnosis.** Use the smallest authorized reproduction
+   with known inputs. A one-variable local comparison can establish a planning
+   defect without resolving a synthetic source reference. Label that limit:
+   local plan acceptance is not authorized capture or live computation. Never
+   change persisted pins, fabricate snapshot/Project authority, or weaken the
+   guard as a workaround.
+6. **Check a supported alternative before escalating.** Ordinary query capture,
+   an existing native Selection, supported UI authoring, and an actual installed
+   integration are different routes. Verify availability, permissions and
+   analytical suitability rather than assuming equivalence. A UI save may
+   create a correctly typed new version; activating an already mis-pinned
+   immutable draft does not repair it.
+7. **Make the conclusion falsifiable and scoped.** Record the required outcome,
+   failing boundary, evidence, alternatives checked, a counterexample that
+   would disprove the diagnosis, and remaining verification. Say "this MCP
+   authoring route fails" when that is all the evidence shows. Correct an
+   overstated blocker explicitly and continue unaffected approved work; do not
+   turn removal of a false blocker into a full-migration success claim.
+
+Useful discriminators:
+
+| Observation | Check next | Do not conclude |
+| --- | --- | --- |
+| Query asks for verdicts but the stored pin says traces | Authoring contract and persisted source metadata | A new capture engine is required |
+| A specialized snapshot helper is called only by Projects | Ordinary runner input preparation and exact query capture | Every Measure needs a new Project or capture bridge |
+| A working reader consumes persisted Measures | Trace their native calculation and Automation upstream | The reader itself must manufacture Measure inputs |
+| A source-pin correction makes a local plan pass | Real source capture, required fields, authority and same-input semantics | The entire pipeline is now runnable or equivalent |
+| An issue is fixed or a PR is merged | Exact fix scope and deployed behavior | All input grains, provenance gaps and cutover gates are resolved |
+| Required native fields remain unavailable after supported routes are checked | Precisely scoped capability gap and permitted next action | Native-only requirements permit an improvised engine or weakened evidence |
+
 ## Contracts worth understanding
 
 - Keep input preparation outside Measure calculation: source discovery chooses

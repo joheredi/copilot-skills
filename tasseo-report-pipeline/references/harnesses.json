@@ -1,0 +1,47 @@
+{
+  "CLI": {
+    "client": "CLI",
+    "displayName": "Copilot CLI",
+    "owningTeam": "copilot-cli-evals",
+    "agentNames": [
+      "Copilot CLI"
+    ],
+    "canonicalHarness": "github-copilot-cli",
+    "defaultModeWhenMissingBeforeCutover": "default",
+    "repeatExpectations": {
+      "copilotclibench|dev": 5,
+      "default": 1
+    }
+  },
+  "App": {
+    "client": "App",
+    "displayName": "Copilot App",
+    "owningTeam": "copilot-app-evals",
+    "agentNames": [
+      "GitHub Copilot App"
+    ],
+    "canonicalHarness": "github-copilot-app",
+    "defaultModeWhenMissingBeforeCutover": "default",
+    "repeatExpectations": {
+      "copilotappbench|nightly": 5,
+      "default": 1
+    }
+  },
+  "CCA": {
+    "client": "CCA",
+    "displayName": "GitHub Copilot Cloud Agent",
+    "owningTeam": "copilot-cca-evals",
+    "agentNames": [
+      "GitHub Copilot Cloud Agent"
+    ],
+    "canonicalHarness": "GitHub Copilot Cloud Agent",
+    "defaultModeWhenMissingBeforeCutover": "default",
+    "repeatExpectations": {
+      "default": 1,
+      "ccaprbench|nightly": 5,
+      "ccataskbench|nightly": 5,
+      "deepswe1-1|nightly": 1,
+      "deepswe|nightly": 1
+    }
+  }
+}

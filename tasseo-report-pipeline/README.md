@@ -28,6 +28,12 @@ approved local-dev handoff. Missing MCP capabilities can block a particular
 agent operation; establish whether the required outcome has another supported
 path before declaring the migration blocked.
 
+Before a blocker or infrastructure recommendation, the entry point now requires
+a native-path diagnosis. In particular, the ordinary Measure runner already
+captures Selection inputs and their exact provenance; a failed source pin or an
+optional specialized snapshot path must not be mistaken for a missing engine.
+See [the required investigation](references/native-building-blocks.md#mandatory-native-path-investigation).
+
 ## Knowledge and authority
 
 The conceptual map is informed by native Tasseo documentation and read-only
@@ -60,8 +66,10 @@ Packaging checks do not establish behavioral effectiveness or production health.
 Use a real YAML parser for `SKILL.md`, verify links and portability, and review
 changes for sensitive material before installation or publication.
 
-The following are **defined exercises, not executed evaluations**. Run only
-with the needed environment, access and explicit mutation budget:
+The following are **evaluation definitions, not evaluation results**. Record
+executed cases and observations separately; a passing subset is not a claim
+that the entire package or a live pipeline was evaluated. Run only with the
+needed environment, access and explicit mutation budget:
 
 | Situation | Expected behavior |
 | --- | --- |
@@ -69,7 +77,10 @@ with the needed environment, access and explicit mutation budget:
 | Migration with reproducible source output | Map direct/adapted/gaps, set tolerances, compare same-input intermediate facts and outcomes, disclose meaningful differences |
 | Quantile backfill from averages only | Reject unsupported reconstruction; request sufficient source evidence or a revised approved method |
 | External producer has only metadata tools | Block agent-direct publication, not the aggregate design; evaluate an operator-owned one-off job, verify grants/receipts, and use no credential/direct-API workaround |
-| Selection requests steps/verdicts but authoring pins traces | Establish the route-specific mismatch; inspect upstream preparation and intended Measure input grain before proposing broader access |
+| Selection requests steps/verdicts but authoring pins traces | Compare declared and persisted input types; isolate the authoring/planning failure, inspect ordinary runner capture, and do not propose a new capture engine or weaken the guard |
+| Only a Project-specific snapshot capture helper was initially found | Trace ordinary Selection preparation and exact input capture before declaring a generic capture gap; do not fabricate a Project or require an optional specialized route |
+| Operator supplies a working native report after an engine-blocker claim | Inspect its report-to-Measure-to-Selection/Automation path read-only; correct the blocker, reuse native responsibilities, and preserve the new task's distinct source semantics |
+| A proposed fix handles native snapshot kinds but not ordinary related-row authoring | Scope the fix to its actual mapping and verify deployment separately; neither wait for it as a universal gate nor promise full migration success |
 | Calculation appears to need source EventTime or child-agent depth | Select the window and normalize scope upstream through supported contracts; retain required support/evidence rather than expanding calculation responsibility automatically |
 | Published chart lacks MCP resolver locators but observations have source sets | Distinguish unverified mark resolution from absent evidence; verify the agreed observation-to-trace path without calling whole-input membership exact cell contributors |
 | Direct cell contributors are mandatory but only observation membership works | Keep the required evidence gate; disclose the difference and obtain approval before weakening it |
@@ -90,3 +101,18 @@ limited historical drill-down, but a later request requires exact contributors
 for one native metric with partial support. Preserve the distinction between
 historical and native evidence contracts and between all source members and
 that metric's contributors; do not infer new platform or direct-write authority.
+
+Held-out native-only case: normal runner capture exists, but every checked
+supported input surface lacks a field required by the approved analytical
+contract. The operator prohibits custom engines and has not approved application
+changes. Report the precise remaining capability gap and preserve the blocked
+acceptance criterion; do not overcorrect the native-first lesson into a claim
+that a working native solution must exist or an excuse to invent evidence.
+
+## Harness onboarding and post-deployment cutover
+
+See [references/harness-onboarding.md](references/harness-onboarding.md) for:
+- The **partner team self-serve MSBench tag contract** (`run="workflow-scheduled"`, `branch="main"`, `benchmark`, `msbench.benchmark.version`, `agent-mode`, `Cost_Total_USD`, `msbench.agent_elapsed_time_sec`, `msbench.ttft_sec`, and main-agent token counts).
+- The **3-input automated onboarding workflow** (`client`, `agent`, `owningTeam`) via `references/onboard-harness.py` and `references/harnesses.json`.
+- The **post-deployment cutover checklist** for transitioning from Path 1 (local scheduled runner + `packetJson`) to Path 2 (100% cloud `schedule.cron` Automation + native Measure Selection) once `microsoft/cae#4945` and optional `microsoft/cae#5006` (`#4946` Part 2) are deployed.
+
